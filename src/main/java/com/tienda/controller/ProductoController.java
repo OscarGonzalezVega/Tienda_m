@@ -1,7 +1,7 @@
 package com.tienda.controller;
 
-import com.tienda.domain.Categoria;
-import com.tienda.service.CategoriaService;
+import com.tienda.domain.Producto;
+import com.tienda.service.ProductoService;
 import com.tienda.service.FirebaseStorageService;
 import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +16,19 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/categoria")
-public class CategoriaController {
+@RequestMapping("/producto")
+public class ProductoController {
     
     @Autowired
-    private CategoriaService categoriaService;
+    private ProductoService productoService;
     
     @GetMapping("/listado")
     public String listado(Model model){
-        var lista = categoriaService.getCategorias(true);
-        model.addAttribute("categorias", lista);
-        model.addAttribute("totalCategorias", lista.size());
+        var lista = productoService.getProductos(true);
+        model.addAttribute("productos", lista);
+        model.addAttribute("totalProductos", lista.size());
         
-        return "/categoria/listado";
+        return "/producto/listado";
     }
     
     @Autowired
@@ -37,42 +37,42 @@ public class CategoriaController {
     private MessageSource messageSource;
     
     @PostMapping("/guardar")
-    public String guardar(Categoria categoria, 
+    public String guardar(Producto producto, 
             @RequestParam() MultipartFile imagenFile,
             RedirectAttributes redirectAttributes){
         if(!imagenFile.isEmpty()){
             //Vamos a subir una imagen
-            categoriaService.save(categoria);
-            String rutaImagen=firebaseStorageService.cargaImagen(imagenFile, "categoria", categoria.getIdCategoria());
-            categoria.setRutaImagen(rutaImagen);
+            productoService.save(producto);
+            String rutaImagen=firebaseStorageService.cargaImagen(imagenFile, "producto", producto.getIdProducto());
+            producto.setRutaImagen(rutaImagen);
         }
-        categoriaService.save(categoria);
+        productoService.save(producto);
         redirectAttributes.addFlashAttribute("todoOk", messageSource.getMessage("mensaje.actualizado", null, Locale.getDefault()));
         messageSource.getMessage("mensaje.actualizado", null, Locale.getDefault());
-        return "redirect:/categoria/listado";
+        return "redirect:/producto/listado";
     }
     
     @PostMapping("/eliminar")
-    public String eliminar(Categoria categoria, RedirectAttributes redirectAttributes){
-        categoria = categoriaService.getCategorias(categoria);
-        if(categoria==null){
-            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("categoria.error01", null, Locale.getDefault()));
+    public String eliminar(Producto producto, RedirectAttributes redirectAttributes){
+        producto = productoService.getProductos(producto);
+        if(producto==null){
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("producto.error01", null, Locale.getDefault()));
         }else if(false){ //En semana 8 hacemos esta lógica...
-            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("categoria.error02", null, Locale.getDefault()));
-        }else if(categoriaService.delete(categoria)){
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("producto.error02", null, Locale.getDefault()));
+        }else if(productoService.delete(producto)){
             redirectAttributes.addFlashAttribute("todoOk", messageSource.getMessage("mensaje.eliminado", null, Locale.getDefault()));
         }else{
-            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("categoria.error03", null, Locale.getDefault()));
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("producto.error03", null, Locale.getDefault()));
         }
-        categoriaService.delete(categoria);
-        return "redirect:/categoria/listado";
+        productoService.delete(producto);
+        return "redirect:/producto/listado";
     }
     
     @PostMapping("/modificar")
-    public String modificar(Categoria categoria, Model model){
-        categoria=categoriaService.getCategorias(categoria);
-        model.addAttribute("categoria", categoria);
+    public String modificar(Producto producto, Model model){
+        producto=productoService.getProductos(producto);
+        model.addAttribute("producto", producto);
         
-        return "/categoria/modifica";
+        return "/producto/modifica";
     }
 }
