@@ -1,6 +1,7 @@
 package com.tienda.controller;
 
 import com.tienda.domain.Producto;
+import com.tienda.service.CategoriaService;
 import com.tienda.service.ProductoService;
 import com.tienda.service.FirebaseStorageService;
 import java.util.Locale;
@@ -21,12 +22,17 @@ public class ProductoController {
     
     @Autowired
     private ProductoService productoService;
+    @Autowired
+    private CategoriaService categoriaService;
     
     @GetMapping("/listado")
     public String listado(Model model){
         var lista = productoService.getProductos(true);
         model.addAttribute("productos", lista);
         model.addAttribute("totalProductos", lista.size());
+        
+        var categorias = categoriaService.getCategorias(true);
+        model.addAttribute("categorias", categorias);
         
         return "/producto/listado";
     }
@@ -54,7 +60,7 @@ public class ProductoController {
     
     @PostMapping("/eliminar")
     public String eliminar(Producto producto, RedirectAttributes redirectAttributes){
-        producto = productoService.getProductos(producto);
+        producto = productoService.getProducto(producto);
         if(producto==null){
             redirectAttributes.addFlashAttribute("error", messageSource.getMessage("producto.error01", null, Locale.getDefault()));
         }else if(false){ //En semana 8 hacemos esta lógica...
@@ -70,8 +76,11 @@ public class ProductoController {
     
     @PostMapping("/modificar")
     public String modificar(Producto producto, Model model){
-        producto=productoService.getProductos(producto);
+        producto=productoService.getProducto(producto);
         model.addAttribute("producto", producto);
+        
+        var categorias = categoriaService.getCategorias(true);
+        model.addAttribute("categorias", categorias);
         
         return "/producto/modifica";
     }
