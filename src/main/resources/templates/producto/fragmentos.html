@@ -14,7 +14,8 @@
             <div class="row py-4 mb-2 bg-light">
                 <div class="col-md-1"></div>
                 <div class="col-md-3">
-                    <button type="button" 
+                    <button type="button"
+                            sec:authorize="hasRole('ROLE_ADMIN')"
                             class="btn btn-primary" 
                             data-bs-toggle="modal" 
                             data-bs-target="#exampleModal">
@@ -118,7 +119,7 @@
                                             <th>[[#{producto.total}]]</th>
                                             <th>[[#{producto.imagen}]]</th>
                                             <th>[[#{producto.activo}]]</th>
-                                            <th></th>
+                                            <th sec:authorize="hasRole('ROLE_ADMIN')"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -131,7 +132,7 @@
                                             <td>[[${p.categoria.descripcion}]]</td>
                                             <td><img th:src="@{${p.rutaImagen}}" alt="noData" height="75"/></td>
                                             <td th:text="${p.activo} ? 'Activa':'Inactiva'"></td>
-                                            <td>
+                                            <td sec:authorize="hasRole('ROLE_ADMIN')">
                                                 <div class="d-flex align-items-start">                                                    
                                                     <button type="button"
                                                             class="btn btn-danger"
