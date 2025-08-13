@@ -16,12 +16,12 @@ public class UsuarioService {
     @Autowired
     private RolRepository rolRepository;
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<Usuario> getUsuarios() {
         return usuarioRepository.findAll();
     }
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public Usuario getUsuario(Usuario usuario) {
         return usuarioRepository.findById(usuario.getIdUsuario()).orElse(null);
     }
@@ -32,22 +32,22 @@ public class UsuarioService {
         return usuarioRepository.findByUsername(username);
     }
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public Usuario getUsuarioPorUsernameYPassword(String username, String password) {
         return usuarioRepository.findByUsernameAndPassword(username, password);
     }
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public Usuario getUsuarioPorUsernameOCorreo(String username, String correo) {
         return usuarioRepository.findByUsernameOrCorreo(username, correo);
     }
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public boolean existeUsuarioPorUsernameOCorreo(String username, String correo) {
         return usuarioRepository.existsByUsernameOrCorreo(username, correo);
     }
 
-     @Transactional
+    @Transactional
     public void save(Usuario usuario, boolean crearRolUser) {
         usuario=usuarioRepository.save(usuario);
         if (crearRolUser) {  //Si se está creando el usuario, se crea el rol por defecto "USER"
@@ -58,7 +58,7 @@ public class UsuarioService {
         }
     }
 
-     @Transactional
+    @Transactional
     public boolean delete(Usuario usuario) {
         try {
             usuarioRepository.delete(usuario);
